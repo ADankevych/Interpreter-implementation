@@ -169,14 +169,13 @@ public:
 };
 
 int main() {
-    cout << "Hello, World!" << endl << "Enter something " << endl;
     string input;
     getline(cin, input);
     queue<string> tokens = Token::QueueToken(input);
     queue<string> output = PolishNotation::ShuntingYard(tokens);
     double result = Calculator::Calculate(output);
 
-    cout << result << endl;
+    cout << result;
 
     return 0;
 }
