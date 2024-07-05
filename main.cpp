@@ -3,6 +3,7 @@
 #include <stack>
 #include <string>
 #include <cmath>
+#include <map>
 using namespace std;
 
 class Token {
@@ -168,14 +169,60 @@ public:
     }
 };
 
+class Variable {
+public:
+    static void VariableValue(string input){
+        int counter1 = strlen("var ");
+        int counter2 = strlen("var ");
+        map<string, double> variables;
+        while(input[counter1] != ' ' && input[counter1] != '=') {
+            counter1++;
+        }
+        string varName = input.substr(counter2, counter1 - counter2);
+        size_t positionEquals = input.find("=");
+        string varValue = input.substr(positionEquals, input.length() - positionEquals);
+
+        queue<string> tokensVar = Token::QueueToken(varValue);
+        queue<string> outputVar = PolishNotation::ShuntingYard(tokensVar);
+        double resultVar = Calculator::Calculate(outputVar);
+        variables[varName] = resultVar;
+
+        getline(cin, input);
+        size_t positionVar = input.find(varName);
+        while (positionVar != string::npos) {
+            input.replace(positionVar, varName.length(), to_string(resultVar));
+            positionVar = input.find(varName, positionVar + to_string(resultVar).length());
+        }
+
+        queue<string> tokensWithVar = Token::QueueToken(input);
+        queue<string> outputWithVar = PolishNotation::ShuntingYard(tokensWithVar);
+        double resultWithVar = Calculator::Calculate(outputWithVar);
+
+        cout << resultWithVar << endl;
+    }
+
+};
+
 int main() {
     string input;
-    getline(cin, input);
-    queue<string> tokens = Token::QueueToken(input);
-    queue<string> output = PolishNotation::ShuntingYard(tokens);
-    double result = Calculator::Calculate(output);
+    while (true){
+        getline(cin, input);
 
-    cout << result;
+        switch (input[0]){
+            case'0':
+                cout << "Bye";
+                return 0;
+            case 'v':
+                Variable::VariableValue(input);
+                break;
 
+            default:
+                queue<string> tokens = Token::QueueToken(input);
+                queue<string> output = PolishNotation::ShuntingYard(tokens);
+                double result = Calculator::Calculate(output);
+                cout << result;
+                break;
+        }
+    }
     return 0;
 }
