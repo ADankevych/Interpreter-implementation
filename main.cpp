@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <map>
+#include <list>
 using namespace std;
 
 class Token {
@@ -203,6 +204,61 @@ public:
 
 };
 
+class Functions {
+public:
+    static void UserDef(string input){
+        int counter1 = strlen("def ");
+        int counter2 = strlen("def ");
+        map<string, string> functions;
+        while(input[counter1] != '{') {
+            counter1++;
+        }
+        string funcNameArgs = input.substr(counter2, counter1 - counter2);
+        string funcValue = input.substr(counter1+1, input.length() - counter1 - 2);
+        functions[funcNameArgs] = funcValue;
+
+        counter1 = strlen("def ");
+        while (input[counter2] != '(') {
+            counter2++;
+        }
+        string funcName = input.substr(counter1, counter2 - counter1);
+        counter1 = counter2;
+        cout<< "Function " << funcName << " is defined" << endl;
+        while (input[counter2] != ',') {
+            counter2++;
+        }
+        string funcArg1 = input.substr(counter1+1, counter2 - counter1-1);
+
+        counter1 = counter2;
+        while (input[counter2] != ')') {
+            counter2++;
+        }
+        string funcArg2 = input.substr(counter1+2, counter2 - counter1-2);
+        cout<<funcArg1<<endl<<funcArg2<<endl;
+        getline(cin, input);
+        counter1 = funcName.length();
+        counter2 = counter1;
+        while (input[counter1] != ')') {
+            counter1++;
+        }
+        string funcParam = input.substr(counter2, counter1 - counter2 + 1);
+        string funcBody = functions[funcNameArgs];
+        while (funcBody.find(funcArg1) != string::npos) {
+            funcBody.replace(funcBody.find(funcArg1), funcArg1.length(), funcParam);
+        }
+        while (funcBody.find(funcArg2) != string::npos) {
+            funcBody.replace(funcBody.find(funcArg2), funcArg2.length(), funcParam);
+        }
+
+        queue<string> tokensWithFunc = Token::QueueToken(funcBody);
+        queue<string> outputWithFunc = PolishNotation::ShuntingYard(tokensWithFunc);
+        double resultWithFunc = Calculator::Calculate(outputWithFunc);
+
+        cout << resultWithFunc << endl;
+    }
+
+};
+
 int main() {
     string input;
     while (true){
@@ -215,7 +271,9 @@ int main() {
             case 'v':
                 Variable::VariableValue(input);
                 break;
-
+            case 'd':
+                Functions::UserDef(input);
+                break;
             default:
                 queue<string> tokens = Token::QueueToken(input);
                 queue<string> output = PolishNotation::ShuntingYard(tokens);
