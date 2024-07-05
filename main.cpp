@@ -223,7 +223,6 @@ public:
         }
         string funcName = input.substr(counter1, counter2 - counter1);
         counter1 = counter2;
-        cout<< "Function " << funcName << " is defined" << endl;
         while (input[counter2] != ',') {
             counter2++;
         }
@@ -234,20 +233,26 @@ public:
             counter2++;
         }
         string funcArg2 = input.substr(counter1+2, counter2 - counter1-2);
-        cout<<funcArg1<<endl<<funcArg2<<endl;
+
         getline(cin, input);
         counter1 = funcName.length();
+        counter2 = counter1;
+        while (input[counter1] != ',') {
+            counter1++;
+        }
+        string funcParam1 = input.substr(counter2+1, counter1 - counter2 -1);
+
         counter2 = counter1;
         while (input[counter1] != ')') {
             counter1++;
         }
-        string funcParam = input.substr(counter2, counter1 - counter2 + 1);
+        string funcParam2 = input.substr(counter2+2, counter1 - counter2 -2);
         string funcBody = functions[funcNameArgs];
         while (funcBody.find(funcArg1) != string::npos) {
-            funcBody.replace(funcBody.find(funcArg1), funcArg1.length(), funcParam);
+            funcBody.replace(funcBody.find(funcArg1), funcArg1.length(), funcParam1);
         }
         while (funcBody.find(funcArg2) != string::npos) {
-            funcBody.replace(funcBody.find(funcArg2), funcArg2.length(), funcParam);
+            funcBody.replace(funcBody.find(funcArg2), funcArg2.length(), funcParam2);
         }
 
         queue<string> tokensWithFunc = Token::QueueToken(funcBody);
