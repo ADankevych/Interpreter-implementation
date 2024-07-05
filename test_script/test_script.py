@@ -46,6 +46,14 @@ def test_echo():
         {
             "input": "var a = 1+2*(2+5)\na+10*a\n",
             "expected_output": "165"
+        },
+        {
+            "input": "def myfunc(c, d) { min(c, d) + max(c, d) }\nmyfunc(3, 4)\n",
+            "expected_output": "7"
+        },
+        {
+            "input": "def myfunc(c, d) { c * d + max(c, d) }\nmyfunc(5, 6)\n",
+            "expected_output": "36"
         }
     ]
 
