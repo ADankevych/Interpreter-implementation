@@ -3,7 +3,7 @@ import subprocess
 
 def run_echo(input_data):
     process = subprocess.Popen(
-        ['/Users/anastasia_d/CLionProjects/Interpreter-implementation//cmake-build-debug/Interpreter_implementation'],
+        ['/Users/anastasia_d/CLionProjects/Interpreter-implementation/cmake-build-debug/Interpreter_implementation'],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -38,6 +38,14 @@ def test_echo():
         {
             "input": "max(2*5, 4/4) * min(2, 4-1) / (3 + 2)\n",
             "expected_output": "4"
+        },
+        {
+            "input": "var abc = min(3, 7-5)\nabc+10\n",
+            "expected_output": "12"
+        },
+        {
+            "input": "var a = 1+2*(2+5)\na+10*a\n",
+            "expected_output": "165"
         }
     ]
 
