@@ -40,6 +40,10 @@ def test_echo():
             "expected_output": "4"
         },
         {
+            "input": "abs(-5)\n",
+            "expected_output": "5"
+        },
+        {
             "input": "var abc = min(3, 7-5)\nabc+10\n",
             "expected_output": "12"
         },

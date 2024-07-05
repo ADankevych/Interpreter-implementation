@@ -4,7 +4,7 @@
 #include <string>
 #include <cmath>
 #include <map>
-#include <list>
+
 using namespace std;
 
 class Token {
@@ -30,7 +30,7 @@ public:
                 }
                 queueTokens.push(string(1, element));
             } else if (operators.find(element) != string::npos) {
-                if (i == 0 || (i > 0 && operators.find(numExpression[i - 1]) != string::npos)) {
+                if (i == 0 || (i > 0 && operators.find(numExpression[i - 1]) != string::npos) || numExpression[i - 1] == '(') {
                     buffer.push(string(1, element));
                 } else {
                     if (!buffer.empty()) {
@@ -45,7 +45,8 @@ public:
                 }
             } else if (numExpression.substr(i, 3) == "min" ||
                        numExpression.substr(i, 3) == "max" ||
-                       numExpression.substr(i, 3) == "pow") {
+                       numExpression.substr(i, 3) == "pow" ||
+                       numExpression.substr(i, 3) == "abs") {
                 queueTokens.push(numExpression.substr(i, 3));
                 i += 2;
             }
@@ -76,6 +77,7 @@ public:
                 return 2;
             case 'm':
             case 'p':
+            case 'a':
                 return 3;
             default:
                 return 0;
@@ -107,7 +109,7 @@ public:
                 if (!notationStack.empty() && notationStack.top() == "(") {
                     notationStack.pop();
                 }
-            } else if (token == "min" || token == "max" || token == "pow") {
+            } else if (token == "min" || token == "max" || token == "pow" || token == "abs") {
                 notationStack.push(token);
             } else {
                 while (!notationStack.empty() && OperatorsPrecedence(token) <= OperatorsPrecedence(notationStack.top())) {
@@ -149,6 +151,11 @@ public:
         }
     }
 
+    static double ChooseOperationabs(const string &operation, double operand) {
+        if (operation == "abs") return abs(operand);
+        return 0;
+    }
+
     static double Calculate(queue<string> &tokens) {
         stack<double> stack;
         while (!tokens.empty()) {
@@ -157,6 +164,10 @@ public:
 
             if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
                 stack.push(stod(token));
+            } else if (token == "abs") {
+                double operand = stack.top();
+                stack.pop();
+                stack.push(ChooseOperationabs(token, operand));
             } else {
                 double operand2 = stack.top();
                 stack.pop();
@@ -181,7 +192,7 @@ public:
         }
         string varName = input.substr(counter2, counter1 - counter2);
         size_t positionEquals = input.find("=");
-        string varValue = input.substr(positionEquals, input.length() - positionEquals);
+        string varValue = input.substr(positionEquals + 1, input.length() - positionEquals - 1);
 
         queue<string> tokensVar = Token::QueueToken(varValue);
         queue<string> outputVar = PolishNotation::ShuntingYard(tokensVar);
@@ -201,7 +212,6 @@ public:
 
         cout << resultWithVar << endl;
     }
-
 };
 
 class Functions {
